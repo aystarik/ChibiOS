@@ -22,7 +22,7 @@
  * @{
  */
 
-/* TODO: LSEBYP like in F3.*/
+/* TODO: LSEBYP like in F3. Disable HSI16 if not used.*/
 
 #include "hal.h"
 
@@ -198,15 +198,12 @@ void stm32_clock_init(void) {
   /* Other clock-related settings (dividers, MCO etc).*/
   RCC->CR   |= STM32_RTCPRE;
   RCC->CFGR |= STM32_MCOPRE | STM32_MCOSEL |
-               STM32_PPRE2 | STM32_PPRE1 | STM32_HPRE;
+               STM32_PPRE2  | STM32_PPRE1  | STM32_HPRE;
   RCC->CSR  |= STM32_RTCSEL;
 
   /* Flash setup and final clock selection.*/
-#if defined(STM32_FLASHBITS1)
-  FLASH->ACR = STM32_FLASHBITS1;
-#endif
-#if defined(STM32_FLASHBITS2)
-  FLASH->ACR = STM32_FLASHBITS2;
+#if defined(STM32_FLASHBITS)
+  FLASH->ACR = STM32_FLASHBITS;
 #endif
 
   /* Switching to the configured clock source if it is different from MSI.*/
@@ -216,6 +213,9 @@ void stm32_clock_init(void) {
     ;
 #endif
 #endif /* STM32_NO_INIT */
+
+  /* Peripherals clock sources setup.*/
+  RCC->CCIPR = STM32_HSI48SEL;
 
   /* SYSCFG clock enabled here because it is a multi-functional unit shared
      among multiple drivers.*/

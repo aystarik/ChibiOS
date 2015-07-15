@@ -984,10 +984,11 @@
  * @brief   Flash settings.
  */
 #if (STM32_HCLK <= STM32_0WS_THRESHOLD) || defined(__DOXYGEN__)
-#define STM32_FLASHBITS1            0x00000000
+#define STM32_FLASHBITS             0
 #else
-#define STM32_FLASHBITS1            0x00000004
-#define STM32_FLASHBITS2            0x00000007
+#define STM32_FLASHBITS             (FLASH_ACR_PRE_READ |                   \
+                                     FLASH_ACR_PRFTEN   |                   \
+                                     FLASH_ACR_LATENCY)
 #endif
 
 /*===========================================================================*/
